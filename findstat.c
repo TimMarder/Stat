@@ -7,3 +7,9 @@ size_t filesize(char *filename){
   stat(filename,&info);
   return info.st_size;
 }
+
+char* fileperm(char *filename){
+  struct stat info;
+  stat(filename,&info);
+  return info.st_mode;
+}
