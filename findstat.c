@@ -7,18 +7,35 @@
 #include <unistd.h>
 #include <time.h>
 
-int main(){
-  struct stat *info = malloc(sizeof(struct stat));
-  char * fd = "test.txt";
-  stat(fd,info);
-  int size = info->st_size;
-  printf("Size of file: %d\n",size);
-  
-  int perm = info->st_mode;
-  printf("File permissions: %o",perm);
+char* get_size( char* buff , double size ) {
+    if (size < 1000.0) {
+        sprintf( buff, "%f B", size );
+        return buff;
+    }
+    size = size / 1000.0;
+    if (size < 1000.0){
+		sprintf( buff, "%f KB", size );
+		return buff;
+	}
+	size = size / 1000.0;
+	if (size < 1000.0){
+		sprintf( buff, "%f MB", size );
+		return buff;
+	}
+	size = size / 1000.0;
+	sprintf( buff, "%f GB", size );
+	return buff;
+}
 
-  time_t last_acc = info->st_atime;
-  printf("Last accessed: %s\n", ctime(&last_acc));
-  
+int main(){
+    char * info;
+  struct stat buff;
+  char * fd = "findstat.c";
+  stat(fd,&buff);
+  printf("Size of file: %ld\n", buff.st_size);
+  printf("Convinient size: %s\n", get_size(info, buff.st_size));
+  printf("Last accessed: %s\n", ctime(&buff.st_atime));
+  printf("Last modified: %s\n", ctime(&buff.st_mtime));
+  printf("File permissions: %d\n", buff.st_mode);
   return 0;
 }
